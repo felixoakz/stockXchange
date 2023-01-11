@@ -272,3 +272,5 @@ def addcash():
         db.execute("UPDATE users SET cash = :add WHERE id = :id", add=add, id=userID)
         flash("Amount successfully added!")
         return redirect("/")
+
+# write updates before publishing
