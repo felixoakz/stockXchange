@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Portifolio
+{% endblock %}
+
+{% block main %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Symbol</th>
+                <th class="text-start">Name</th>
+                <th class="text-end">Shares</th>
+                <th class="text-end">Current Price</th>
+                <th class="text-end">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in portifolio %}
+                <tr>
+                    <td class="text-start">{{ stock.symbol }}</td>
+                    <td class="text-start">{{ stock.name }}</td>
+                    <td class="text-end">{{ stock.shares }}</td>
+                    <td class="text-end">{{ stock.price | usd }}</td>
+                    {% set totalstock = stock.shares * stock.price %}
+                    <td class="text-end">{{ totalstock | usd }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td class="border-0 fw-bold text-end" colspan="4">Cash</td>
+                <td class="border-0 text-end">{{ cash | usd }}</td>
+            </tr>
+            <tr>
+                <td class="border-0 fw-bold text-end" colspan="4">Total</td>
+                <td class="border-0 w-bold text-end">{{ total }}</td>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock %}
