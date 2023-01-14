@@ -273,5 +273,4 @@ def addcash():
         flash("Amount successfully added!")
         return redirect("/")
 
-# write updates before publishing
-# testing commit to github
+# testing to remote 14th
