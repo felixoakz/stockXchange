@@ -45,7 +45,8 @@ def index():
     userID = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
-        portifolio = db.execute("SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history WHERE user_id = ? GROUP BY symbol", userID)
+        portifolio = db.execute(
+            "SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history WHERE user_id = ? GROUP BY symbol", userID)
         # loop to add current stock value and details to the portifolio variable (name, price)
         for i in range(0, len(portifolio)):
             currentValue = lookup(portifolio[i]["symbol"])
@@ -54,7 +55,8 @@ def index():
         cash = db.execute("SELECT cash from users WHERE id = :id", id=userID)
         cash = round(float(cash[0]['cash']), 2)
         # inserting into CASH variable the total of all stocks user has (total cash from stocks)
-        total = db.execute("SELECT SUM(shares * share_price) as cash FROM history WHERE user_id = :id", id=userID)
+        total = db.execute(
+            "SELECT SUM(shares * share_price) as cash FROM history WHERE user_id = :id", id=userID)
         total = round(float(total[0]['cash']), 2)
         total = usd(total + cash)
         return render_template("index.html", portifolio=portifolio, cash=cash, total=total)
@@ -92,7 +94,8 @@ def buy():
         # new variable to store user id as an INT
         userID = session['user_id']
         # verifing users current balance and inserting it to a variable
-        userbalance = db.execute("SELECT cash from users WHERE id = :id", id=userID)
+        userbalance = db.execute(
+            "SELECT cash from users WHERE id = :id", id=userID)
         userbalance = userbalance[0]["cash"]
         # return apology if balance less than transaction cost
         if total > userbalance:
@@ -100,7 +103,8 @@ def buy():
         # inserting into variable new balance after buying
         newbalance = userbalance - total
         # updating balance in table users, by userID
-        db.execute("UPDATE users SET cash = (?) WHERE id = (?)", newbalance, userID)
+        db.execute("UPDATE users SET cash = (?) WHERE id = (?)",
+                   newbalance, userID)
         # inserting into new table history the transaction details
         db.execute("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES (?, ?, ?, ?, ?)",
                    userID, stock["symbol"], shares, stock["price"], datetime.datetime.now())
@@ -115,7 +119,8 @@ def history():
     if request.method == "GET":
         userID = session["user_id"]
         # querry all transactions data database
-        transactions = db.execute("SELECT * FROM history WHERE user_id = :id", id=userID)
+        transactions = db.execute(
+            "SELECT * FROM history WHERE user_id = :id", id=userID)
     return render_template("history.html", transactions=transactions)
 
 
@@ -132,7 +137,8 @@ def login():
         elif not request.form.get("password"):
             return apology("must provide password")
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        rows = db.execute("SELECT * FROM users WHERE username = ?",
+                          request.form.get("username"))
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
             return apology("invalid username and/or password")
@@ -205,7 +211,8 @@ def register():
         hash = generate_password_hash(password)
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
-            user = db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
+            user = db.execute(
+                "INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
         except:
             return apology("username already exists!", 400)
         # save user session, redirect user to index
@@ -219,7 +226,8 @@ def sell():
     # showing all stocks user has
     if request.method == "GET":
         userID = session["user_id"]
-        stocks = db.execute("SELECT symbol FROM history WHERE user_id = :id", id=userID)
+        stocks = db.execute(
+            "SELECT symbol FROM history WHERE user_id = :id", id=userID)
         return render_template("sell.html", stocks=stocks)
     else:
         # casting selected options to its variables
@@ -230,20 +238,23 @@ def sell():
         if not symbol:
             return apology("must select a symbol")
         # querrying user shares
-        user_shares = db.execute("SELECT shares FROM history WHERE user_id = :id AND symbol = :symbol", id=userID, symbol=symbol)
+        user_shares = db.execute(
+            "SELECT shares FROM history WHERE user_id = :id AND symbol = :symbol", id=userID, symbol=symbol)
         user_shares = int(user_shares[0]['shares'])
         # displayt apology if user has less shares than what selected
         if shares > user_shares:
             return apology("too much stocks selected")
         # lookup function for inserting selected stock current value and user cash
         stock = lookup(symbol)
-        userbalance = db.execute("SELECT cash from users WHERE id = :id", id=userID)
+        userbalance = db.execute(
+            "SELECT cash from users WHERE id = :id", id=userID)
         userbalance = userbalance[0]["cash"]
         # doing calculation of new balance after the transaction
         transactiontotal = shares * stock["price"]
         usernewbalance = userbalance + transactiontotal
         # querries for update user balance on USER table and user transaction into history table
-        db.execute("UPDATE users SET cash = ? WHERE id = ?", usernewbalance, userID)
+        db.execute("UPDATE users SET cash = ? WHERE id = ?",
+                   usernewbalance, userID)
         db.execute("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES(?, ?, ?, ?, ?)",
                    userID, stock["symbol"], (-1)*shares, (-1)*stock["price"], datetime.datetime.now())
         # flash confirmation message on redirection to homepage
@@ -265,10 +276,12 @@ def addcash():
             return apology("must inform some value")
         userID = session["user_id"]
         # checking user balance then addint to selected value
-        userbalance = db.execute("SELECT cash from users WHERE id = :id", id=userID)
+        userbalance = db.execute(
+            "SELECT cash from users WHERE id = :id", id=userID)
         userbalance = userbalance[0]["cash"]
         add = userbalance + float(addcash)
         # inserting new sum according to new value to database
-        db.execute("UPDATE users SET cash = :add WHERE id = :id", add=add, id=userID)
+        db.execute("UPDATE users SET cash = :add WHERE id = :id",
+                   add=add, id=userID)
         flash("Amount successfully added!")
         return redirect("/")
