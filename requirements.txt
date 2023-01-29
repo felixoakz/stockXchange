@@ -2,3 +2,4 @@ Flask
 Flask-Session
 requests
 Gunicorn
+sqlite3
