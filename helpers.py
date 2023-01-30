@@ -1,6 +1,7 @@
 import os
 import requests
 import urllib.parse
+import yfinance as yf
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -34,8 +35,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# deprecated
-def lookup(symbol):
+
+def iexlookup(symbol):
     """Look up quote for symbol."""
 
     # Contact API
@@ -59,8 +60,20 @@ def lookup(symbol):
         return None
 
 
+def lookup(symbol):
+    """Look up quote for symbol."""
+    ticker = yf.Ticker(symbol)
+    todayData = ticker.history(period='1d')
+    return round(todayData['Close'][0], 2)
+
+
+stock = input('Enter stock: ').upper().strip()
+if stock[-1].isdigit():
+    stock = stock + '.SA'
+
+print(f'A share of {stock} costs ${currentPrice(stock)}')
+
+
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
-
-# update helpers when you can

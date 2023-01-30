@@ -4,3 +4,4 @@ Flask-Session
 requests
 functools
 werkzeug
+yfinance
