@@ -36,7 +36,7 @@ def login_required(f):
     return decorated_function
 
 
-def iexlookup(symbol):
+def lookup(symbol):
     """Look up quote for symbol."""
 
     # Contact API
@@ -58,21 +58,6 @@ def iexlookup(symbol):
         }
     except (KeyError, TypeError, ValueError):
         return None
-
-
-def lookup(symbol):
-    """Look up quote for symbol."""
-    symbol.upper().strip()
-    
-    if symbol[-1].isdigit():
-        symbol = symbol + '.SA'
-    try:
-        ticker = yf.Ticker(symbol)
-        todayData = ticker.history(period='1d')
-        return round(todayData['Close'][0], 2)
-    except Exception as e:
-        return f"Error: Could not retrieve stock data for symbol '{symbol}' - {str(e)}"
-
 
 
 def usd(value):
