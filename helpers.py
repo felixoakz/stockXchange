@@ -1,7 +1,6 @@
 import os
 import requests
-import urllib.parse
-import yfinance as yf
+import csv
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -36,30 +35,51 @@ def login_required(f):
     return decorated_function
 
 
-def lookup(symbol):
-    """Look up quote for symbol."""
-
-    # Contact API
-    try:
-        api_key = os.environ.get("API_KEY")
-        url = f"https://cloud.iexapis.com/stable/stock/{urllib.parse.quote_plus(symbol)}/quote?token={api_key}"
-        response = requests.get(url)
-        response.raise_for_status()
-    except requests.RequestException:
-        return None
-
-    # Parse response
-    try:
-        quote = response.json()
-        return {
-            "name": quote["companyName"],
-            "price": float(quote["latestPrice"]),
-            "symbol": quote["symbol"]
-        }
-    except (KeyError, TypeError, ValueError):
-        return None
-
-
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
+
+
+def load_nasdaq_symbols():
+    """Load list of nasdaq companies"""
+    symbols = {}
+    try:
+        with open('webstudies/trainingTrader/nasdaq_companies.csv', 'r') as f:
+            reader = csv.reader(f)
+            next(reader)  # skip the header row
+            for row in reader:
+                symbol, name = row
+                symbols[symbol] = name
+
+    except Exception as e:
+        print("An error occurred while reading the CSV file", e)
+        return {}
+    return symbols
+
+
+def lookup(symbol):
+    """Look up quote for symbol."""
+
+# contact api
+    symbol = symbol.upper().strip()
+    api_key = "PFDIMYSMNA5J1BUE"
+    url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={api_key}"
+    try:
+        response = requests.get(url)
+
+        # parse response
+        stock_data = response.json()
+        company_symbol = stock_data["Global Quote"]["01. symbol"]
+        closing_price = float(stock_data["Global Quote"]["05. price"])
+
+    except (requests.RequestException, KeyError, TypeError, ValueError):
+        return None
+
+    nasdaq_symbols = load_nasdaq_symbols()
+    company_name = nasdaq_symbols.get(symbol, "Unknown Company")
+
+    return {
+        "name": company_name,
+        "price": closing_price,
+        "symbol": company_symbol
+    }
