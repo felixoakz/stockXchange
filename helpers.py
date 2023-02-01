@@ -45,7 +45,7 @@ def load_nasdaq_symbols():
     """Load list of nasdaq companies"""
     symbols = {}
     try:
-        with open('webstudies/trainingTrader/nasdaq_companies.csv', 'r') as f:
+        with open('nasdaq_companies.csv', 'r') as f:
             reader = csv.reader(f)
             next(reader)  # skip the header row
             for row in reader:
@@ -60,10 +60,11 @@ def load_nasdaq_symbols():
 
 def lookup(symbol):
     """Look up quote for symbol."""
-
-# contact api
     symbol = symbol.upper().strip()
-    api_key = "PFDIMYSMNA5J1BUE"
+
+    # contact api
+    load_dotenv()
+    api_key = os.getenv("API_KEY")
     url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={api_key}"
     try:
         response = requests.get(url)
