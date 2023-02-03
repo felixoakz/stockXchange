@@ -6,7 +6,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
-from helpers import apology, login_required, lookup, usd
+from helpers import apology, login_required, lookup, usd, execute_query
 
 # Configure application
 app = Flask(__name__)
@@ -45,8 +45,10 @@ def index():
     userID = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
-        portifolio = db.execute(
-            "SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history WHERE user_id = ? GROUP BY symbol", userID)
+        portifolio = execute_query("""SELECT symbol, SUM(shares) as shares,
+                                   SUM(share_price) as price FROM history 
+                                   WHERE user_id = ? GROUP BY symbol""", userID)
+        
         # loop to add current stock value and details to the portifolio variable (name, price)
         for i in range(0, len(portifolio)):
             currentValue = lookup(portifolio[i]["symbol"])
