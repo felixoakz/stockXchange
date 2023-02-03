@@ -1,5 +1,5 @@
 import os
-from dotenv import load_dotenv
+from python-dotenv import load_dotenv
 import requests
 import csv
 import sqlite3

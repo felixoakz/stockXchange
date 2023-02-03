@@ -24,7 +24,7 @@ Session(app)
 
 # Make sure API key is present in the enviroment
 load_dotenv()
-api_key = os.getenv("API_KEY"):
+api_key = os.getenv("API_KEY")
 if api_key is None:
     raise RuntimeError("API_KEY not found in .env file")
 
