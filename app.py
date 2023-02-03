@@ -208,8 +208,8 @@ def register():
         hash = generate_password_hash(password)
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
-            user = db.execute(
-                "INSERT INTO users (username, hash) VALUES (?, ?)", username, hash)
+            user = execute_query(
+                "INSERT INTO users (username, hash) VALUES (?, ?)", (username, hash))
         except:
             return apology("username already exists!", 400)
         # save user session, redirect user to index
