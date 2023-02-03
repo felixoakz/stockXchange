@@ -1,6 +1,5 @@
 import os
 import datetime
-import sqlite3
 
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
@@ -37,11 +36,9 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
-
 
 # aplication routes
+
 @app.route("/")
 @login_required
 def index():
