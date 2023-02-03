@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 import csv
+import sqlite3
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -85,3 +86,13 @@ def lookup(symbol):
         "price": closing_price,
         "symbol": company_symbol
     }
+
+def execute_query(query, params=None)
+    with sqlite3.connect("finance.db") as conn:
+        cursor = conn.cursor()
+        if params is None:
+            cursor.execute(query)
+        else:
+            cursor.execute(query, params)
+        result = cursor.fetchall()
+        return result
