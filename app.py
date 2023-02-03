@@ -22,12 +22,6 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Make sure API key is present in the enviroment
-load_dotenv()
-api_key = os.getenv("API_KEY")
-if api_key is None:
-    raise RuntimeError("API_KEY not found in .env file")
-
 
 @app.after_request
 def after_request(response):
