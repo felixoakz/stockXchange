@@ -28,6 +28,7 @@ api_key = os.getenv("API_KEY")
 if api_key is None:
     raise RuntimeError("API_KEY not found in .env file")
 
+
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -48,7 +49,7 @@ def index():
         portifolio = execute_query("""SELECT symbol, SUM(shares) as shares,
                                    SUM(share_price) as price FROM history 
                                    WHERE user_id = ? GROUP BY symbol""", userID)
-        
+
         # loop to add current stock value and details to the portifolio variable (name, price)
         for i in range(0, len(portifolio)):
             currentValue = lookup(portifolio[i]["symbol"])

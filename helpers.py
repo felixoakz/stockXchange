@@ -1,5 +1,5 @@
 import os
-from python-dotenv import load_dotenv
+from dotenv import load_dotenv
 import requests
 import csv
 import sqlite3
@@ -87,7 +87,7 @@ def lookup(symbol):
         "symbol": company_symbol
     }
 
-def execute_query(query, params=None)
+def execute_query(query, params=None):
     with sqlite3.connect("finance.db") as conn:
         cursor = conn.cursor()
         if params is None:
