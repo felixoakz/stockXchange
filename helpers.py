@@ -87,6 +87,7 @@ def lookup(symbol):
         "symbol": company_symbol
     }
 
+
 def execute_query(query, params=None):
     with sqlite3.connect("finance.db") as conn:
         cursor = conn.cursor()
