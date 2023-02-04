@@ -168,8 +168,11 @@ def login():
 
         # Query database for username
         rows = execute_query(
-            "SELECT * FROM users WHERE username = ?", (request.form.get("username"),), fetch=True)
-        print(f'----> {rows} of type {type(rows)}')
+            "SELECT * FROM users WHERE username = ?", (request.form.get("username"),), fetch=True
+        )
+        for row in rows[0]:
+            print('--->', row)
+        
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
             return apology("invalid username and/or password")
