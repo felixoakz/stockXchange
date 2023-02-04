@@ -171,7 +171,7 @@ def login():
             "SELECT * FROM users WHERE username = ?", (request.form.get("username"),), fetch=True)
 
         # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0]["hash"], str(request.form.get("password"))):
             return apology("invalid username and/or password")
 
         # Remember which user has logged in
