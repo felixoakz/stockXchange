@@ -38,29 +38,29 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    userID = session["user_id"]
+    user_id = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
         portifolio = execute_query("""SELECT symbol, SUM(shares) as shares,
                                    SUM(share_price) as price FROM history 
-                                   WHERE user_id = ? GROUP BY symbol""", userID
+                                   WHERE user_id = ? GROUP BY symbol""", (user_id,), fetch=True
                                    )
 
         # loop to add current stock value and details to the portifolio variable (name, price)
         for i in range(0, len(portifolio)):
-            currentValue = lookup(portifolio[i]["symbol"])
-            portifolio[i].update(currentValue)
+            current_value = lookup(portifolio[i]["symbol"])
+            portifolio[i].update(current_value)
 
         # inserting into TOTAL variable the user balance and formatting it with the USD function from helpers
         cash = execute_query(
-            "SELECT cash from users WHERE id = :id", id=userID
+            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
         )
 
         cash = round(float(cash[0]['cash']), 2)
 
         # inserting into CASH variable the total of all stocks user has (total cash from stocks)
         total = execute_query(
-            "SELECT SUM(shares * share_price) as cash FROM history WHERE user_id = ?", userID
+            "SELECT SUM(shares * share_price) as cash FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
 
         total = round(float(total[0]['cash']), 2)
@@ -104,11 +104,11 @@ def buy():
         total = stock["price"] * float(shares)
 
         # new variable to store user id as an INT
-        userID = session['user_id']
+        user_id = session['user_id']
 
         # verifing users current balance and inserting it to a variable
         userbalance = execute_query(
-            "SELECT cash from users WHERE id = :id", id=userID
+            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
         )
         userbalance = userbalance[0]["cash"]
 
@@ -119,15 +119,16 @@ def buy():
         # inserting into variable new balance after buying
         newbalance = userbalance - total
 
-        # updating balance in table users, by userID
+        # updating balance in table users, by user_id
         execute_query("UPDATE users SET cash = ? WHERE id = ?",
-                      (newbalance, userID)
+                      (newbalance, user_id), fetch=False
                       )
 
         # inserting into new table history the transaction details
         execute_query("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES ?, ?, ?, ?, ?",
-                      (userID, stock["symbol"], shares,
-                       stock["price"], datetime.datetime.now())
+                      (user_id, stock["symbol"], shares,
+                       stock["price"], datetime.datetime.now()),
+                      fetch=False
                       )
 
         # flasks flashing message to display confirmation temporary message
@@ -139,11 +140,11 @@ def buy():
 @login_required
 def history():
     if request.method == "GET":
-        userID = session["user_id"]
+        user_id = session["user_id"]
 
         # querry all transactions data database
         transactions = execute_query(
-            "SELECT * FROM history WHERE user_id = ?", userID
+            "SELECT * FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
 
     return render_template("history.html", transactions=transactions)
@@ -167,7 +168,7 @@ def login():
 
         # Query database for username
         rows = execute_query(
-            "SELECT * FROM users WHERE username = ?", request.form.get("username"))
+            "SELECT * FROM users WHERE username = ?", (request.form.get("username"),), fetch=True)
 
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], request.form.get("password")):
@@ -259,7 +260,7 @@ def register():
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
             user = execute_query(
-                "INSERT INTO users (username, hash) VALUES ?, ?", (username, hash)
+                "INSERT INTO users (username, hash) VALUES ?, ?", (username, hash), fetch=False
             )
         except:
             return apology("username already exists!", 400)
@@ -274,9 +275,9 @@ def register():
 def sell():
     # showing all stocks user has
     if request.method == "GET":
-        userID = session["user_id"]
+        user_id = session["user_id"]
         stocks = execute_query(
-            "SELECT symbol FROM history WHERE user_id = ?", userID
+            "SELECT symbol FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
 
         return render_template("sell.html", stocks=stocks)
@@ -284,7 +285,7 @@ def sell():
         # casting selected options to its variables
         symbol = request.form.get("symbol")
         shares = int(request.form.get("shares"))
-        userID = session["user_id"]
+        user_id = session["user_id"]
 
         # error handling if symbol was not selected
         if not symbol:
@@ -292,8 +293,7 @@ def sell():
 
         # querrying user shares
         user_shares = execute_query(
-            "SELECT shares FROM history WHERE user_id = ? AND symbol = ?", (
-                userID, symbol)
+            "SELECT shares FROM history WHERE user_id = ? AND symbol = ?", (user_id, symbol), fetch=True
         )
 
         user_shares = int(user_shares[0]['shares'])
@@ -305,7 +305,7 @@ def sell():
         # lookup function for inserting selected stock current value and user cash
         stock = lookup(symbol)
         userbalance = execute_query(
-            "SELECT cash from users WHERE id = ?", userID
+            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
         )
 
         userbalance = userbalance[0]["cash"]
@@ -316,13 +316,13 @@ def sell():
 
         # querries for update user balance on USER table and user transaction into history table
         execute_query("UPDATE users SET cash = ? WHERE id = ?",
-                      (usernewbalance, userID)
+                      (usernewbalance, user_id), fetch=False
                       )
 
         execute_query("""INSERT INTO history (user_id, symbol,
                       shares, share_price, date) VALUES ?, ?, ?, ?, ?""",
-                      (userID, stock["symbol"], (-1)*shares, (-1)
-                       * stock["price"], datetime.datetime.now())
+                      (user_id, stock["symbol"], (-1)*shares, (-1)
+                       * stock["price"], datetime.datetime.now()), fetch=False
                       )
 
         # flash confirmation message on redirection to homepage
@@ -345,17 +345,18 @@ def addcash():
         # returning apology if user did not input anything
         if not addcash:
             return apology("must inform some value")
-        userID = session["user_id"]
+        user_id = session["user_id"]
 
         # checking user balance then addint to selected value
         userbalance = execute_query(
-            "SELECT cash from users WHERE id = ?", userID
+            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
         )
 
         userbalance = userbalance[0]["cash"]
         add = userbalance + float(addcash)
 
         # inserting new sum according to new value to database
-        execute_query("UPDATE users SET cash = ? WHERE id = ?", (add, userID))
+        execute_query("UPDATE users SET cash = ? WHERE id = ?",
+                      (add, user_id), fetch=False)
         flash("Amount successfully added!")
         return redirect("/")

@@ -88,12 +88,19 @@ def lookup(symbol):
     }
 
 
-def execute_query(query, params=None):
+def execute_query(query, params=None, fetch=True):
     with sqlite3.connect("finance.db") as conn:
         cursor = conn.cursor()
+
         if params is None:
             cursor.execute(query)
+
         else:
             cursor.execute(query, params)
-        result = cursor.fetchall()
-        return result
+
+        if fetch:
+            result = cursor.fetchall()
+            return result
+
+        else:
+            conn.commit()
