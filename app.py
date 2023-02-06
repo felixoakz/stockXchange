@@ -46,8 +46,7 @@ def index():
     user_id = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
-        portifolio = execute_query("""SELECT symbol, SUM(shares) as shares,
-                                   SUM(share_price) as price FROM history 
+        portifolio = execute_query("""SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history 
                                    WHERE user_id = ? GROUP BY symbol""", (user_id,), fetch=True
                                    )
 
@@ -323,8 +322,8 @@ def sell():
         userbalance = userbalance[0]["cash"]
 
         # doing calculation of new balance after the transaction
-        transactiontotal = shares * stock["price"]
-        usernewbalance = userbalance + transactiontotal
+        transaction_total = shares * stock["price"]
+        usernewbalance = userbalance + transaction_total
 
         # querries for update user balance on USER table and user transaction into history table
         execute_query("UPDATE users SET cash = ? WHERE id = ?",
