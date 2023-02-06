@@ -63,8 +63,12 @@ def index():
             "SELECT SUM(shares * share_price) as cash FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
 
-        total = round(float(total[0]['cash']), 2)
-        total = usd(total + cash)
+        if total:
+            total = round(float(total[0]['cash']), 2)
+            total = usd(total + cash)
+        else:
+            total = 0
+
         return render_template("index.html", portifolio=portifolio, cash=cash, total=total)
     except:
         return apology("buy some stocks first!", 200)
