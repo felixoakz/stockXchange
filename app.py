@@ -172,13 +172,7 @@ def login():
         rows = execute_query(
             "SELECT * FROM users WHERE username = ?", (username,), fetch=True
         )
-        print('-'*10)
-        print(rows, type(rows))
-        print(rows[0], type(rows[0]))
-        print(rows[0]["hash"], type(rows[0]["hash"]))
-        print('-'*10)
-        
-        
+
         # Ensure username exists and password is correct
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
             return apology("invalid username and/or password")
