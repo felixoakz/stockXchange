@@ -155,7 +155,7 @@ def history():
         transactions = execute_query(
             "SELECT * FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
-    print('-'*10, transactions)
+
     return render_template("history.html", transactions=transactions)
 
 
