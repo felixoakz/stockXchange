@@ -11,12 +11,16 @@ Register
             placeholder="Username" type="text">
     </div>
     <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email"
+            placeholder="E-mail" type="text">
+    </div>
+    <div class="mb-3">
         <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
     </div>
     <div class="mb-3">
         <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation"
             placeholder="Password (confirmation)" type="password">
     </div>
-    <button class="btn btn-info" type="submit">Register</button>
+    <button class="btn btn-dark" type="submit">Register</button>
 </form>
 {% endblock %}
