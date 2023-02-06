@@ -272,7 +272,7 @@ def register():
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
             user = execute_query(
-                "INSERT INTO users (username, hash) VALUES (?, ?)", (username, hash), fetch=False
+                "INSERT INTO users (username, email, hash) VALUES (?, ?)", (username, email, hash), fetch=False
             )
         except:
             return apology("username already exists!", 400)
