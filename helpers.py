@@ -99,7 +99,8 @@ def execute_query(query, params=None, fetch=True):
             cursor.execute(query, params)
 
         if fetch:
-            result = cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+            result = [dict(zip(columns, row)) for row in cursor.fetchall()]
             return result
 
         else:
