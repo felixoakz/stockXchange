@@ -8,6 +8,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 from helpers import apology, login_required, lookup, usd, execute_query
 
+# live preview flask app edits (will leave this here just in case)
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
+
 # Configure application
 app = Flask(__name__)
 
@@ -131,7 +136,7 @@ def buy():
         # inserting into new table history the transaction details
         execute_query("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES (?, ?, ?, ?, ?)",
                       (user_id, stock["symbol"], shares,
-                       stock["price"], datetime.datetime.now()),
+                       stock["price"], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
                       fetch=False
                       )
 
@@ -150,7 +155,7 @@ def history():
         transactions = execute_query(
             "SELECT * FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
-
+    print('-'*10, transactions)
     return render_template("history.html", transactions=transactions)
 
 
@@ -328,7 +333,7 @@ def sell():
 
         execute_query("""INSERT INTO history (user_id, symbol,
                       shares, share_price, date) VALUES (?, ?, ?, ?, ?)""",
-                      (user_id, stock["symbol"], (-1)*shares, (-1)*stock["price"], datetime.datetime.now()), fetch=False
+                      (user_id, stock["symbol"], (-1)*shares, (-1)*stock["price"], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")), fetch=False
                       )
 
         # flash confirmation message on redirection to homepage
