@@ -125,7 +125,7 @@ def buy():
                       )
 
         # inserting into new table history the transaction details
-        execute_query("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES ?, ?, ?, ?, ?",
+        execute_query("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES (?, ?, ?, ?, ?)",
                       (user_id, stock["symbol"], shares,
                        stock["price"], datetime.datetime.now()),
                       fetch=False
@@ -263,7 +263,7 @@ def register():
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
             user = execute_query(
-                "INSERT INTO users (username, hash) VALUES ?, ?", (username, hash), fetch=False
+                "INSERT INTO users (username, hash) VALUES (?, ?)", (username, hash), fetch=False
             )
         except:
             return apology("username already exists!", 400)
@@ -323,9 +323,8 @@ def sell():
                       )
 
         execute_query("""INSERT INTO history (user_id, symbol,
-                      shares, share_price, date) VALUES ?, ?, ?, ?, ?""",
-                      (user_id, stock["symbol"], (-1)*shares, (-1)
-                       * stock["price"], datetime.datetime.now()), fetch=False
+                      shares, share_price, date) VALUES (?, ?, ?, ?, ?)""",
+                      (user_id, stock["symbol"], (-1)*shares, (-1)*stock["price"], datetime.datetime.now()), fetch=False
                       )
 
         # flash confirmation message on redirection to homepage
