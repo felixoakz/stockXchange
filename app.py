@@ -248,18 +248,22 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
-        print('-'*30, username, email, password)
+        
         # Ensure username was submitted
         if not username:
-            return apology("must provide username")
+            return apology("must provide username", "error")
+
+        # validating email with @
+        elif not '@' in email:
+            return apology("aparently not an email", "error")
 
         # Ensure password was submitted
         elif not password:
-            return apology("must provide password")
+            return apology("must provide password", "error")
 
         # Ensure confirmation was submitted
         elif not confirmation:
-            return apology("must confirm password")
+            return apology("must confirm password", "error")
 
         # Ensure password fields are not the same
         elif password != confirmation:
@@ -275,7 +279,7 @@ def register():
                 "INSERT INTO users (username, email, hash) VALUES (?, ?, ?)", (username, email, hash), fetch=False
             )
         except:
-            return apology("username or email already exists!", 400)
+            return apology("username or email already exists!", "error")
 
         # save user session, redirect user to index
         session["user_id"] = user
