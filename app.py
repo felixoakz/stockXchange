@@ -248,7 +248,7 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
-
+        print('-'*30, username, email, password)
         # Ensure username was submitted
         if not username:
             return apology("must provide username")
@@ -272,10 +272,10 @@ def register():
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
             user = execute_query(
-                "INSERT INTO users (username, email, hash) VALUES (?, ?)", (username, email, hash), fetch=False
+                "INSERT INTO users (username, email, hash) VALUES (?, ?, ?)", (username, email, hash), fetch=False
             )
         except:
-            return apology("username already exists!", 400)
+            return apology("username or email already exists!", 400)
 
         # save user session, redirect user to index
         session["user_id"] = user
