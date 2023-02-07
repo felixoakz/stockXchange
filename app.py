@@ -52,10 +52,10 @@ def index():
             portifolio[i].update(current_value)
 
         # inserting into TOTAL variable the user balance and formatting it with the USD function from helpers
-        cash = execute_query(
-            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
-        )
+        cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
+        )  # returns a list with a key value pair
 
+        # formatting to a float with 2 decimals
         cash = round(float(cash[0]['cash']), 2)
 
         # inserting into CASH variable the total of all stocks user has (total cash from stocks)
@@ -63,11 +63,9 @@ def index():
             "SELECT SUM(shares * share_price) as cash FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
 
-        if total:
-            total = round(float(total[0]['cash']), 2)
-            total = usd(total + cash)
-        else:
-            total = 0
+        total = round(float(total[0]['cash']), 2)
+        total = usd(total + cash)
+
 
         return render_template("index.html", portifolio=portifolio, cash=cash, total=total)
     except:
