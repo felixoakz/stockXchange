@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import requests
 import csv
 import sqlite3
-import logging
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -95,24 +94,16 @@ def execute_query(query, params=None, fetch=True):
     with sqlite3.connect("finance.db") as conn:
         cursor = conn.cursor()
 
-        try:
-            if params is None:
-                cursor.execute(query)
-            else:
-                cursor.execute(query, params)
+        if params is None:
+            cursor.execute(query)
 
-            if fetch:
-                columns = [col[0] for col in cursor.description]
-                result = cursor.fetchall()
+        else:
+            cursor.execute(query, params)
 
-                if not result:
-                    return None
-                else:
-                    result = [dict(zip(columns, row)) for row in result]
-                    return result
-            else:
-                conn.commit()
+        if fetch:
+            columns = [col[0] for col in cursor.description]
+            result = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            return result
 
-        except sqlite3.Error as e:
-            logging.error("SQLite error: %s", e)
-            return None
+        else:
+            conn.commit()
