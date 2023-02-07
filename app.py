@@ -45,6 +45,7 @@ def index():
         portifolio = execute_query("""SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history 
                                    WHERE user_id = ? GROUP BY symbol""", (user_id,), fetch=True
                                    )
+        print('1-----', portifolio)
 
         # loop to add current stock value and details to the portifolio variable (name, price)
         for i in range(0, len(portifolio)):
@@ -54,11 +55,12 @@ def index():
         cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
                              )  # returns a list with a key value pair
 
+        print('2----', cash)
         # formatting to a float with 2 decimals
         cash = round(float(cash[0]['cash']), 2)
 
         total = execute_query("""
-                              SELECT user_id, SUM(shares * share_price) AS cash
+                              SELECT SUM(shares * share_price) AS cash
                                 FROM (
                                 SELECT user_id, symbol, SUM(shares) AS shares, share_price
                                 FROM history
@@ -68,12 +70,18 @@ def index():
                                 GROUP BY user_id;
                               """, (user_id,), fetch=True
                               )
+        print('3-----', total)
 
         total = round(float(total[0]['cash']), 2)
         total = usd(total + cash)
 
         return render_template("index.html", portifolio=portifolio, cash=cash, total=total)
-    except:
+
+    except Exception as Ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = template.format(type(Ex).__name__, Ex.args)
+        print(message)
+
         return apology("buy some stocks first!", 200)
 
 
