@@ -59,6 +59,8 @@ def load_nasdaq_symbols():
     return symbols
 
 
+# this function should have been 2 functions for  better viewing and maitenance
+# but as i wrote a function to fit the place of an older one, i wrote as a single function
 def lookup(symbol):
     """Look up quote for symbol."""
     symbol = symbol.upper().strip()
