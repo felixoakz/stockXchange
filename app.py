@@ -45,11 +45,11 @@ def index():
         portifolio = execute_query("""SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history 
                                    WHERE user_id = ? GROUP BY symbol""", (user_id,), fetch=True
                                    )
-        print(portifolio)
+
         # loop to add current stock value and details to the portifolio variable (name, price)
         for stock in portifolio:
             current_value = lookup(stock['symbol'])
-            stock['price'] = current_value
+            stock['price'] = current_value['price']
 
         cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
                              )  # returns a list with a key value pair
