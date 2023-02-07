@@ -45,17 +45,15 @@ def index():
         portifolio = execute_query("""SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history 
                                    WHERE user_id = ? GROUP BY symbol""", (user_id,), fetch=True
                                    )
-        print('1-----', portifolio)
-
+        print(portifolio)
         # loop to add current stock value and details to the portifolio variable (name, price)
-        for i in range(0, len(portifolio)):
-            current_value = lookup(portifolio[i]["symbol"])
-            portifolio[i].update(current_value)
+        for stock in portifolio:
+            current_value = lookup(stock['symbol'])
+            stock['price'] = current_value
 
         cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
                              )  # returns a list with a key value pair
 
-        print('2----', cash)
         # formatting to a float with 2 decimals
         cash = round(float(cash[0]['cash']), 2)
 
@@ -70,7 +68,6 @@ def index():
                                 GROUP BY user_id;
                               """, (user_id,), fetch=True
                               )
-        print('3-----', total)
 
         total = round(float(total[0]['cash']), 2)
         total = usd(total + cash)
