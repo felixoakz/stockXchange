@@ -8,10 +8,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
 from helpers import apology, login_required, lookup, usd, execute_query
 
-# live preview flask app edits (will leave this here just in case)
-if __name__ == "__main__":
-    app.debug = True
-    app.run()
 
 # Configure application
 app = Flask(__name__)
@@ -248,7 +244,7 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
-        
+
         # Ensure username was submitted
         if not username:
             return apology("must provide username", "error")
@@ -337,7 +333,8 @@ def sell():
 
         execute_query("""INSERT INTO history (user_id, symbol,
                       shares, share_price, date) VALUES (?, ?, ?, ?, ?)""",
-                      (user_id, stock["symbol"], (-1)*shares, (-1)*stock["price"], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")), fetch=False
+                      (user_id, stock["symbol"], (-1)*shares, (-1)*stock["price"],
+                       datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")), fetch=False
                       )
 
         # flash confirmation message on redirection to homepage
@@ -375,3 +372,9 @@ def addcash():
                       (add, user_id), fetch=False)
         flash("Amount successfully added!")
         return redirect("/")
+
+
+# live preview flask app edits (will leave this here just in case)
+if __name__ == "__main__":
+    app.debug = True
+    app.run()
