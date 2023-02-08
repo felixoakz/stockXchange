@@ -305,11 +305,13 @@ def sell():
     # showing all stocks user has
     if request.method == "GET":
         user_id = session["user_id"]
-        stocks = execute_query(
-            "SELECT symbol FROM history WHERE user_id = ?", (user_id,), fetch=True
-        )
 
+        stocks = execute_query(
+            "SELECT DISTINCT symbol FROM history WHERE user_id = ?", (user_id,), fetch=True
+        )
+        print(stocks)
         return render_template("sell.html", stocks=stocks)
+
     else:
         # casting selected options to its variables
         symbol = request.form.get("symbol")
