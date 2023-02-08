@@ -226,6 +226,7 @@ def quote():
     # client reaching route via POST
     else:
         # casting symbol from HMTL from to a variable SYMBOL
+        
         symbol = request.form.get("symbol")
 
         # returning apology if stock input is none via the variable symbol from HTML form on /quote
