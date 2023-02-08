@@ -52,7 +52,7 @@ def index():
                 current_value = lookup(portifolio[i]["symbol"])
                 portifolio[i].update(current_value)
             except TypeError:
-                return apology("Sorry, the API reached its limits. \nTry again in a few minutes.")
+                return apology("Sorry, the API reached its limits\n(5 requests/minute)\nTry again in a few minutes.")
 
         cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
                              )  # returns a list with a key value pair
@@ -112,7 +112,7 @@ def buy():
         try:
             stock = lookup(symbol)
         except TypeError:
-            return apology("Sorry, the API reached its limits. Try again in a few minutes.")
+            return apology("Sorry, the API reached its limits\n(5 requests/minute)\nTry again in a few minutes.")
 
         # show apollogy if symbol does not exists
         if stock == None:
@@ -236,7 +236,7 @@ def quote():
         try:
             quoted = lookup(symbol)
         except TypeError:
-            return apology("Sorry, the API reached its limits. Try again in a few minutes.")
+            return apology("Sorry, the API reached its limits\n(5 requests/minute)\nTry again in a few minutes.")
 
         # this case would return None or empty string, using if not is better than try/except(mostly used for RUNTIME errors)
         if quoted == None:
@@ -335,7 +335,7 @@ def sell():
         try:
             stock = lookup(symbol)
         except TypeError:
-            return apology("Sorry, the API reached its limits. Try again in a few minutes.")
+            return apology("Sorry, the API reached its limits\n(5 requests/minute)\nTry again in a few minutes.")
 
         userbalance = execute_query(
             "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
