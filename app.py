@@ -52,7 +52,7 @@ def index():
                 current_value = lookup(portifolio[i]["symbol"])
                 portifolio[i].update(current_value)
             except TypeError:
-                return apology("Sorry, the API reached its limits. Try again in a few minutes.")
+                return apology("Sorry, the API reached its limits. \nTry again in a few minutes.")
 
         cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
                              )  # returns a list with a key value pair
