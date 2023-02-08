@@ -309,7 +309,7 @@ def sell():
         stocks = execute_query(
             "SELECT DISTINCT symbol FROM history WHERE user_id = ?", (user_id,), fetch=True
         )
-        print(stocks)
+
         return render_template("sell.html", stocks=stocks)
 
     else:
