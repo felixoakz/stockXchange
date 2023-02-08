@@ -47,9 +47,12 @@ def index():
                                    )
 
         # loop to add current stock value and details to the portifolio variable (name, price)
-        for stock in portifolio:
-            current_value = lookup(stock['symbol'])
-            stock['price'] = current_value['price']
+        for i in range(0, len(portifolio)):
+            try:
+                current_value = lookup(portifolio[i]["symbol"])
+                portifolio[i].update(current_value)
+            except TypeError:
+                return apology("Sorry, the API reached its limits. Try again in a few minutes.")
 
         cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
                              )  # returns a list with a key value pair
@@ -106,7 +109,10 @@ def buy():
             return apology("must inform stock symbol and ammount of shares", 400)
 
         # lookup function on symbol, inserting value into stock variable (is a dictionary with 'name','price','symbol')
-        stock = lookup(symbol)
+        try:
+            stock = lookup(symbol)
+        except TypeError:
+            return apology("Sorry, the API reached its limits. Try again in a few minutes.")
 
         # show apollogy if symbol does not exists
         if stock == None:
@@ -227,7 +233,10 @@ def quote():
             return apology("must inform stock symbol", 400)
 
         # using lookup for retrieving stock data and if it does not exist, return an apology
-        quoted = lookup(symbol)
+        try:
+            quoted = lookup(symbol)
+        except TypeError:
+            return apology("Sorry, the API reached its limits. Try again in a few minutes.")
 
         # this case would return None or empty string, using if not is better than try/except(mostly used for RUNTIME errors)
         if quoted == None:
@@ -323,7 +332,11 @@ def sell():
             return apology("too much stocks selected")
 
         # lookup function for inserting selected stock current value and user cash
-        stock = lookup(symbol)
+        try:
+            stock = lookup(symbol)
+        except TypeError:
+            return apology("Sorry, the API reached its limits. Try again in a few minutes.")
+
         userbalance = execute_query(
             "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
         )

@@ -59,8 +59,14 @@ def load_nasdaq_symbols():
     return symbols
 
 
-# this function should have been 2 functions for  better viewing and maitenance
-# but as i wrote a function to fit the place of an older one, i wrote as a single function
+"""
+Following function should have been 2 functions for  better viewing and maitenance,
+but as i wrote a function to fit the place of an older one, i wrote as a single function.
+
+The alpha vintage API has a limit, so sometimes it will return an "Typeerror: NoneType" instead of the stock info.
+"""
+
+
 def lookup(symbol):
     """Look up quote for symbol."""
     symbol = symbol.upper().strip()
