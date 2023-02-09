@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Quoted
+Quoted
 {% endblock %}
 
 {% block main %}
-    <main class="container py-5 text-center">
-        <P>
-            A share of {{ quoted.name }} ({{ quoted.symbol }}) costs {{ quoted.price | usd }}.
-        </P>
-    </main>
+<main class="container py-5 text-center">
+    <P>
+        <b>A share of {{ quoted.name }} ({{ quoted.symbol }}) costs {{ quoted.price | usd }}.</b>
+    </P>
+</main>
 {% endblock %}
