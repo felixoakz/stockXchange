@@ -1,6 +1,3 @@
 Flask
-Gunicorn
 Flask-Session
 requests
-werkzeug
-csv
