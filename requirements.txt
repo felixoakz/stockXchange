@@ -2,6 +2,5 @@ Flask
 Gunicorn
 Flask-Session
 requests
-functools
 werkzeug
 csv
