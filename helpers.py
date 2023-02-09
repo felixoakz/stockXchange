@@ -61,9 +61,9 @@ def load_nasdaq_symbols():
 
 """
 Following function should have been 2 functions for  better viewing and maitenance,
-but as i wrote a function to fit the place of an older one, i wrote as a single function.
+but as I wrote a function to fit the place of an older one, I decided to write it as a single function.
 
-The alpha vintage API has a limit, so sometimes it will return an "Typeerror: NoneType" instead of the stock info.
+The alpha vintage API has a limit, so sometimes it will return an "Typeerror: NoneType" instead of the actual stock info.
 """
 
 
