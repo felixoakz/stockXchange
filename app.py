@@ -42,6 +42,7 @@ def index():
     execute_query(
         "INSERT INTO visitors (date_visited) VALUES ?", (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),), fetch=False
     )
+
     user_id = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
