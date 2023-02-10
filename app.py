@@ -42,9 +42,7 @@ def index():
     execute_query(
         "INSERT INTO visitors (date_visited) VALUES ?", (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),), fetch=False
     )
-    visitors = execute_query(
-        "SELECT * from visitors"
-    )
+
     user_id = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
@@ -81,7 +79,7 @@ def index():
         total = round(float(total[0]['cash']), 2)
         total = usd(total + cash)
 
-        return render_template("index.html", portifolio=portifolio, cash=cash, total=total, visitors=visitors)
+        return render_template("index.html", portifolio=portifolio, cash=cash, total=total)
 
     except Exception as Ex:
         template = "An exception of type {0} occurred. Arguments:\n{1!r}"
@@ -409,8 +407,9 @@ def users():
     if request.method == "GET":
 
         users = execute_query("SELECT * FROM users")
+        visitors = execute_query("SELECT * from visitors")
 
-    return render_template("users.html", users=users, VISITOR_COUNTER=VISITOR_COUNTER)
+    return render_template("users.html", users=users, visitors=visitors)
 
 
 # live preview flask app edits (will leave this here just in case)
