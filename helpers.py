@@ -73,7 +73,7 @@ def lookup(symbol):
 
     # contact api
     load_dotenv()
-    api_key = os.getenv("API_KEY")
+    api_key = os.environ.get('key')
     url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={api_key}"
     try:
         response = requests.get(url)
