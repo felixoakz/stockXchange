@@ -398,6 +398,17 @@ def addcash():
         return redirect("/")
 
 
+@app.route("/users")
+def users():
+    if request.method == "GET":
+
+        users = execute_query(
+            "SELECT * FROM ?", ('users',), fetch=True
+        )
+
+    return render_template("users.html", users=users)
+
+
 # live preview flask app edits (will leave this here just in case)
 if __name__ == "__main__":
     app.debug = True
