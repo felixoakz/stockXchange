@@ -1,6 +1,6 @@
 # *StockXchange*
 ### A web app for managing stock portfolios.
-<br>
+
 
 ## Live Demo
 Check out the live demo at [stockXchange.onrender.com](https://stockxchange.onrender.com/)
