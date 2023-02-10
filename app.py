@@ -402,9 +402,7 @@ def addcash():
 def users():
     if request.method == "GET":
 
-        users = execute_query(
-            "SELECT * FROM ?", ('users',), fetch=True
-        )
+        users = execute_query("SELECT * FROM users")
 
     return render_template("users.html", users=users)
 
