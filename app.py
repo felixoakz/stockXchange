@@ -33,6 +33,8 @@ def after_request(response):
     return response
 
 
+VISITOR_COUNTER = 0
+
 # aplication routes
 
 
@@ -175,6 +177,7 @@ def login():
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
+        VISITOR_COUNTER += 1
         username = request.form.get("username")
         password = request.form.get("password")
 
@@ -404,7 +407,7 @@ def users():
 
         users = execute_query("SELECT * FROM users")
 
-    return render_template("users.html", users=users)
+    return render_template("users.html", users=users, VISITOR_COUNTER=VISITOR_COUNTER)
 
 
 # live preview flask app edits (will leave this here just in case)
