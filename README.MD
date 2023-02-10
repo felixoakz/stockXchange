@@ -24,7 +24,7 @@ The AlphaVantage API was used, which serves the purpose of the demo, but sometim
 
 ## Idea
 
-The idea for this app started as a Harvard CS50 course project using a stock data API and a database to store information. The biggest challenge was adapting the app for hosting, which involved rewriting the database function as well as finding another free API to fetch the desired data.
+The idea for this app started as a Harvard CS50 course project using a stock data API and a database to write and store information. The biggest challenge was adapting the app for hosting, which involved creating a new database function as well as finding a free API to fetch the desired data.
 
 
 ## Lessons learned
