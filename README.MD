@@ -1,5 +1,5 @@
 # *StockXchange*
-### A web app for managing stock portfolios.
+### - A web app for managing stock portfolios.
 
 
 ## Live Demo
