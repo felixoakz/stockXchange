@@ -33,14 +33,15 @@ def after_request(response):
     return response
 
 
-VISITOR_COUNTER = 0
-
 # aplication routes
 
 
 @app.route("/")
 @login_required
 def index():
+    execute_query(
+        "INSERT INTO visitors (date_visited) VALUES ?", (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),), fetch=False
+    )
     user_id = session["user_id"]
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
@@ -177,7 +178,6 @@ def login():
 
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
-        VISITOR_COUNTER += 1
         username = request.form.get("username")
         password = request.form.get("password")
 
