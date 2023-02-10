@@ -15,7 +15,7 @@ With StockXchange, you can manage portfolios of stocks and check their actual pr
 
 ## Technical Details
 
-This app was built with Flask and encapsulated by Gunicorn for hosting on Render 24/7. The client-side uses Jinja templating engine, vanilla HTML, Bootstrap, and just a tiny bit of CSS for simplicity.
+This app was built with Flask and encapsulated by Gunicorn for hosting on Render 24/7. It builds from my GitHub repo and any editing I make locally and push via Git CLI, it automatically updates the remote server and creates a new build. The client-side uses Jinja templating engine, vanilla HTML, Bootstrap, and just a tiny bit of CSS for simplicity.
 
 Your password is hashed with Wekzeug security before being written to the database. The session is configured to use the file system instead of signed cookies. The API is included in the .gitignore file but accessed on the server via an environment variable.
 
