@@ -34,10 +34,10 @@ As this was my first full-fledged web app, it taught me a lot, from learning var
 
 ## Screenshots:
 
-![Alt text](static/sreenshot1.png)
+![Login Page](static/sreenshot1.png)
 
-![Alt text](static/sreenshot3.png)
+![Stock Quote](static/sreenshot3.png)
 
-![Alt text](static/sreenshot2.png)
+![Transactions History](static/sreenshot2.png)
 
-![Alt text](static/sreenshot4.png)
+![Validation Error](static/sreenshot4.png)
