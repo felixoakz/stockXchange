@@ -12,12 +12,8 @@ list of users
             <td class="text-start">{{ user.id }}</td>
             <td class="text-start">{{ user.username }}</td>
             <td class="text-end">{{ user.email }}</td>
-            <td class="text-end">{{ user.hash }}</td>
             <td class="text-end">{{ user.cash | usd }}</td>
         </tr>
-        {% endfor %}
-        {% for visitor in visitors %}
-        <li>Table ID:{{ visitor.id }} Date:{{ visitor.date_visited }}</li>
         {% endfor %}
     </P>
 </main>
