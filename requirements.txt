@@ -3,3 +3,4 @@ Flask-Session
 requests
 gunicorn
 python-dotenv
+psycopg2
