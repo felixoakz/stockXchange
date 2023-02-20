@@ -64,6 +64,7 @@ Following function should have been 2 functions for  better viewing and maitenan
 but as I wrote a function to fit the place of an older one, I decided to write it as a single function.
 
 The alpha vintage API has a limit, so sometimes it will return an "Typeerror: NoneType" instead of the actual stock info.
+But an except is created around it to be displayed as a error message for the user.
 """
 
 
@@ -126,4 +127,3 @@ def execute_query(query, params=None, fetch=True):
 
             else:
                 conn.commit()
-        
