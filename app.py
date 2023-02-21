@@ -43,7 +43,7 @@ def index():
     try:
         # querrying symbol and shares from user (symbol, shares)SELECT symbol, SUM(shares) as shares, SUM(share_price) as price
         portifolio = execute_query("""SELECT symbol, SUM(shares) as shares, SUM(share_price) as price FROM history 
-                                   WHERE user_id = ? GROUP BY symbol""", (user_id,), fetch=True
+                                   WHERE user_id = %s GROUP BY symbol""", (user_id,), fetch=True
                                    )
 
         # loop to add current stock value and details to the portifolio variable (name, price)
@@ -54,7 +54,7 @@ def index():
             except TypeError:
                 return apology("Sorry, the API reached its limits\n(5 requests/minute)\nTry again in a few minutes.")
 
-        cash = execute_query("SELECT cash from users WHERE id = ?", (user_id,), fetch=True
+        cash = execute_query("SELECT cash from users WHERE id = %s", (user_id,), fetch=True
                              )  # returns a list with a key value pair
 
         # formatting to a float with 2 decimals
@@ -65,7 +65,7 @@ def index():
                                 FROM (
                                 SELECT user_id, symbol, SUM(shares) AS shares, share_price
                                 FROM history
-                                WHERE user_id = ?
+                                WHERE user_id = %s
                                 GROUP BY symbol
                                 )
                                 GROUP BY user_id;
@@ -126,7 +126,7 @@ def buy():
 
         # verifing users current balance and inserting it to a variable
         userbalance = execute_query(
-            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
+            "SELECT cash from users WHERE id = %s", (user_id,), fetch=True
         )
         userbalance = userbalance[0]["cash"]
 
@@ -138,12 +138,12 @@ def buy():
         newbalance = userbalance - total
 
         # updating balance in table users, by user_id
-        execute_query("UPDATE users SET cash = ? WHERE id = ?",
+        execute_query("UPDATE users SET cash = %s WHERE id = %s",
                       (newbalance, user_id), fetch=False
                       )
 
         # inserting into new table history the transaction details
-        execute_query("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES (?, ?, ?, ?, ?)",
+        execute_query("INSERT INTO history (user_id, symbol, shares, share_price, date) VALUES (%s, %s, %s, %s, %s)",
                       (user_id, stock["symbol"], shares,
                        stock["price"], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")),
                       fetch=False
@@ -162,7 +162,7 @@ def history():
 
         # querry all transactions data database
         transactions = execute_query(
-            "SELECT * FROM history WHERE user_id = ?", (user_id,), fetch=True
+            "SELECT * FROM history WHERE user_id = %s", (user_id,), fetch=True
         )
 
     return render_template("history.html", transactions=transactions)
@@ -188,7 +188,7 @@ def login():
 
         # Query database for username
         rows = execute_query(
-            "SELECT * FROM users WHERE username = ?", (username,), fetch=True
+            "SELECT * FROM users WHERE username = %s", (username,), fetch=True
         )
 
         # Ensure username exists and password is correct
@@ -290,7 +290,7 @@ def register():
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
             user = execute_query(
-                "INSERT INTO users (username, email, hash) VALUES (?, ?, ?)", (username, email, hash), fetch=False
+                "INSERT INTO users (username, email, hash) VALUES (%s, %s, %s)", (username, email, hash), fetch=False
             )
         except:
             return apology("username or email already exists!", "error")
@@ -308,7 +308,7 @@ def sell():
         user_id = session["user_id"]
 
         stocks = execute_query(
-            "SELECT DISTINCT symbol FROM history WHERE user_id = ?", (user_id,), fetch=True
+            "SELECT DISTINCT symbol FROM history WHERE user_id = %s", (user_id,), fetch=True
         )
 
         return render_template("sell.html", stocks=stocks)
@@ -325,7 +325,7 @@ def sell():
 
         # querrying user shares
         user_shares = execute_query(
-            "SELECT shares FROM history WHERE user_id = ? AND symbol = ?", (user_id, symbol), fetch=True
+            "SELECT shares FROM history WHERE user_id = %s AND symbol = %s", (user_id, symbol), fetch=True
         )
 
         user_shares = int(user_shares[0]['shares'])
@@ -341,7 +341,7 @@ def sell():
             return apology("Sorry, the API reached its limits\n(5 requests/minute)\nTry again in a few minutes.")
 
         userbalance = execute_query(
-            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
+            "SELECT cash from users WHERE id = %s", (user_id,), fetch=True
         )
 
         userbalance = userbalance[0]["cash"]
@@ -351,12 +351,12 @@ def sell():
         usernewbalance = userbalance + transaction_total
 
         # querries for update user balance on USER table and user transaction into history table
-        execute_query("UPDATE users SET cash = ? WHERE id = ?",
+        execute_query("UPDATE users SET cash = %s WHERE id = %s",
                       (usernewbalance, user_id), fetch=False
                       )
 
         execute_query("""INSERT INTO history (user_id, symbol,
-                      shares, share_price, date) VALUES (?, ?, ?, ?, ?)""",
+                      shares, share_price, date) VALUES (%s, %s, %s, %s, %s)""",
                       (user_id, stock["symbol"], (-1)*shares, (-1)*stock["price"],
                        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")), fetch=False
                       )
@@ -385,14 +385,14 @@ def addcash():
 
         # checking user balance then addint to selected value
         userbalance = execute_query(
-            "SELECT cash from users WHERE id = ?", (user_id,), fetch=True
+            "SELECT cash from users WHERE id = %s", (user_id,), fetch=True
         )
 
         userbalance = userbalance[0]["cash"]
         add = userbalance + float(addcash)
 
         # inserting new sum according to new value to database
-        execute_query("UPDATE users SET cash = ? WHERE id = ?",
+        execute_query("UPDATE users SET cash = %s WHERE id = %s",
                       (add, user_id), fetch=False)
         flash("Amount successfully added!")
         return redirect("/")

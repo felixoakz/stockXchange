@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import requests
 import csv
 import psycopg2
+import psycopg2.extras
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -106,16 +107,12 @@ def execute_query(query, params=None, fetch=True):
     :return: list of dictionary with items.
     """
     # Replace the values in angle brackets with your own PostgreSQL database credentials
-    conn = psycopg2.connect(
-        host='<YOUR_HOST>',
-        database='<YOUR_DATABASE>',
-        user='<YOUR_USERNAME>',
-        password='<YOUR_PASSWORD>',
-        port='<PORT>'
-    )
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
     with conn:
-        with conn.cursor() as cursor:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
             if params is None:
                 cursor.execute(query)
             else:

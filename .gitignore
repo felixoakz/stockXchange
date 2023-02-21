@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 API_KEY.env
+DATABASE_URL.env
 
 
 # C extensions
