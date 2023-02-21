@@ -110,7 +110,8 @@ def execute_query(query, params=None, fetch=True):
         host='<YOUR_HOST>',
         database='<YOUR_DATABASE>',
         user='<YOUR_USERNAME>',
-        password='<YOUR_PASSWORD>'
+        password='<YOUR_PASSWORD>',
+        port='<PORT>'
     )
 
     with conn:
