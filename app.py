@@ -15,6 +15,8 @@ app = Flask(__name__)
 # Ensure templates are auto-reloaded while editing aplication
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+
 # Custom filter
 app.jinja_env.filters["usd"] = usd
 

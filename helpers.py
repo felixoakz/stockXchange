@@ -106,9 +106,8 @@ def execute_query(query, params=None, fetch=True):
     :param fetch: set to True if query awaits some return value. False otherwise.
     :return: list of dictionary with items.
     """
-    # Replace the values in angle brackets with your own PostgreSQL database credentials
-    DATABASE_URL = os.environ.get('DATABASE_URL')
 
+    DATABASE_URL = "postgres://stockdb_rwun_user:jNRHbkAc2SAGYs9AxE8HwXg7PrgW0FA2@dpg-cfr3fbun6mpirvujobc0-a.ohio-postgres.render.com/stockdb_rwun"
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
     with conn:
