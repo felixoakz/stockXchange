@@ -107,7 +107,7 @@ def execute_query(query, params=None, fetch=True):
     :return: list of dictionary with items.
     """
 
-    DATABASE_URL = "postgres://stockdb_rwun_user:jNRHbkAc2SAGYs9AxE8HwXg7PrgW0FA2@dpg-cfr3fbun6mpirvujobc0-a.ohio-postgres.render.com/stockdb_rwun"
+    DATABASE_URL = os.environ.get('DATABASE_URL')
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
     with conn:
