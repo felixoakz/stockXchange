@@ -259,17 +259,12 @@ def register():
     # User reached route via POST (as by submitting a form via POST)
     else:
         username = request.form.get("username")
-        email = request.form.get("email")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
 
         # Ensure username was submitted
         if not username:
             return apology("must provide username", "error")
-
-        # validating email with @
-        elif not '@' in email:
-            return apology("aparently not an email", "error")
 
         # Ensure password was submitted
         elif not password:
@@ -290,13 +285,14 @@ def register():
         # register user and password, throw exception if user already exists (SQLite3 IntegrityError exception will be raised)
         try:
             user = execute_query(
-                "INSERT INTO users (username, email, hash) VALUES (?, ?, ?)", (username, email, hash), fetch=False
+                "INSERT INTO users (username, hash) VALUES (?, ?)", (username, hash), fetch=False
             )
         except:
-            return apology("username or email already exists!", "error")
+            return apology("username already exists!", "error")
 
         # save user session, redirect user to index
         session["user_id"] = user
+        flash('Account created! Login with your credentials.')
         return redirect("/")
 
 
@@ -396,15 +392,6 @@ def addcash():
                       (add, user_id), fetch=False)
         flash("Amount successfully added!")
         return redirect("/")
-
-
-@app.route("/users")
-def users():
-    if request.method == "GET":
-
-        users = execute_query("SELECT * FROM users")
-
-    return render_template("users.html", users=users)
 
 
 # live preview flask app edits (will leave this here just in case)
