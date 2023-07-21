@@ -396,5 +396,4 @@ def addcash():
 
 # live preview flask app edits (will leave this here just in case)
 if __name__ == "__main__":
-    app.debug = True
     app.run()
